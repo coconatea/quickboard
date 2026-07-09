@@ -65,7 +65,12 @@ npm install
 npm run pack:win     # 产出 dist/QuickBoard-win32-x64/QuickBoard.exe
 ```
 
-### macOS（需 Xcode / 命令行工具）
+### macOS（推荐直接下载发布包）
+到本仓库 **Releases** 页下载 `QuickBoard-mac-v1.0.0.zip`（已签名的原生 `.app`，约 1MB），解压后双击 `桌面剪贴板.app` 即可，**和本地一样双击就能用**。
+- 当前为 **Apple Silicon（arm64）** 版本，适用于 M1/M2/M3 等 Mac；Intel Mac 需自行用源码构建（见下）。
+- 因未购买 Apple 开发者签名证书，首次打开可能被 Gatekeeper 拦截：右键 `桌面剪贴板.app` → **打开** 即可（只需一次），或终端执行 `xattr -dr com.apple.quarantine 桌面剪贴板.app`。
+
+或从源码自行构建（需 Xcode / 命令行工具）：
 ```bash
 cd native-mac
 ./build.sh           # 编译生成 桌面剪贴板.app
