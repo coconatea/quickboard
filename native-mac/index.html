@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{--p:#08102A;--t:#fff;--t2:#A8A8C2;--bd:rgba(255,255,255,0.08);--ac:#9333EA;--cp:rgba(255,255,255,0.06);--dv:rgba(255,255,255,0.08);--pl:rgba(255,255,255,0.05);--sh:0 12px 34px rgba(0,0,0,0.42)}
+[data-theme="light"]{--p:#fff;--t:#1D1D1F;--t2:#86868B;--bd:rgba(0,0,0,0.08);--cp:rgba(0,0,0,0.05);--dv:rgba(0,0,0,0.06);--pl:rgba(0,0,0,0.05);--sh:0 10px 26px rgba(0,0,0,0.14)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:transparent}
+body{font-family:-apple-system,"PingFang SC",sans-serif;color:var(--t);display:flex}
+/* 卡片铺满窗口且圆角；阴影交给 macOS 原生窗口阴影（会跟随圆角），不在这里画大模糊阴影，避免被直边窗口裁出四角黑框 */
+.app{width:100%;height:100%;background:var(--p);border-radius:16px;border:1px solid var(--bd);overflow:hidden;display:flex;flex-direction:column}
+.app.hide{display:none}
+.tb{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 16px;border-bottom:1px solid var(--dv);flex-shrink:0;-webkit-app-region:no-drag}
+.tb-t{font-size:12px;font-weight:600;color:var(--t2);flex:1}
+.tb-b{display:flex;gap:6px}
+.btn{width:22px;height:22px;border-radius:6px;background:var(--cp);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.btn:hover{background:var(--ac)}.btn:hover svg{stroke:#fff}.btn.x:hover{background:#FF4D6D}
+.sb{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--dv);flex-shrink:0}
+.sb input{flex:1;background:none;border:none;outline:none;color:var(--t);font-size:15px;font-family:inherit}.sb input::placeholder{color:var(--t2)}
+.kbd{font:500 11px "SF Mono",monospace;color:var(--t2);background:var(--cp);padding:3px 6px;border-radius:5px}
+.cb{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--dv);overflow-x:auto;flex-shrink:0}.cb::-webkit-scrollbar{display:none}
+.pl{padding:4px 10px;border-radius:7px;font-size:12px;cursor:pointer;white-space:nowrap;border:none;font-family:inherit;transition:.2s}
+.pl.on{background:var(--ac);color:#fff;font-weight:600}.pl:not(.on){background:var(--pl);color:var(--t2)}
+.lt{flex:1;overflow-y:auto}.lt::-webkit-scrollbar{width:5px}.lt::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.it{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--dv);cursor:pointer}.it:hover{background:rgba(255,255,255,0.03)}
+[data-theme="light"] .it:hover{background:rgba(0,0,0,0.03)}
+.ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.cc{flex:1;min-width:0}.ct{font:600 13px inherit;color:var(--t);margin-bottom:2px}
+.cv{font:12px "SF Mono",monospace;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp2{width:26px;height:26px;border-radius:6px;background:var(--cp);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.cp2:hover{background:var(--ac)}.cp2:hover svg{stroke:#fff}.cp2.ok{background:#22C55E}.cp2.ok svg{stroke:#fff}
+.ia{display:flex;gap:2px;opacity:0;transition:.15s}.it:hover .ia{opacity:1}
+.ab{width:22px;height:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;opacity:.5}.ab:hover{opacity:1;background:var(--cp)}
+.ft{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--dv);flex-shrink:0}
+.fc{font-size:12px;color:var(--t2)}.fa{display:flex;gap:6px;align-items:center}
+.ad{background:var(--ac);color:#fff;border:none;padding:5px 10px;border-radius:7px;font:600 12px inherit;cursor:pointer}.ad:hover{opacity:.85}
+.ib{width:26px;height:26px;border-radius:6px;background:var(--cp);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}.ib:hover{background:rgba(255,255,255,0.1)}
+[data-theme="light"] .ib:hover{background:rgba(0,0,0,0.08)}
+.em{text-align:center;padding:40px 20px;color:var(--t2)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:100}.ov.show{display:flex}
+.md{width:380px;max-height:90vh;overflow-y:auto;background:var(--p);border-radius:16px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--dv)}.mh h2{font:600 14px inherit}
+.mb{padding:16px;display:flex;flex-direction:column;gap:14px}
+.fg label{display:block;font:11px inherit;color:var(--t2);margin-bottom:5px}
+.fi{width:100%;padding:8px 10px;background:var(--cp);border:1px solid var(--bd);border-radius:8px;color:var(--t);font:14px inherit;outline:none}.fi:focus{border-color:var(--ac)}
+textarea.fi{min-height:80px;resize:vertical;font:13px "SF Mono",monospace}
+.fr{display:flex;gap:6px;flex-wrap:wrap}
+.co{padding:5px 10px;border-radius:7px;font:12px inherit;cursor:pointer;border:1px solid var(--bd);background:none;color:var(--t2);transition:.15s}
+.co.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.sh{display:flex;align-items:center;gap:6px;font:11px inherit;color:var(--t2);opacity:.7}
+.mf{display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--dv)}
+.bc{background:none;border:none;color:var(--t2);font:13px inherit;cursor:pointer;padding:6px 12px}
+.bs{background:var(--ac);color:#fff;border:none;padding:6px 16px;border-radius:8px;font:600 13px inherit;cursor:pointer}
+.tt{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ac);color:#fff;padding:8px 20px;border-radius:10px;font:500 13px inherit;transition:.3s;z-index:200;white-space:nowrap}.tt.show{transform:translateX(-50%) translateY(0)}
+/* 桌面宠物：透明无边框，承载 3D 雪人 */
+.pet{display:none;width:100%;height:100%;align-items:center;justify-content:center;position:relative;background:transparent;overflow:hidden}
+.pet.show{display:flex}
+.pet canvas{width:100%;height:100%;display:block;cursor:grab}
+.pet canvas:active{cursor:grabbing}
+.psh{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:64px;height:11px;background:radial-gradient(ellipse at center,rgba(0,0,0,0.22),transparent 70%);border-radius:50%;filter:blur(2px);pointer-events:none}
+[data-theme="light"] .psh{background:radial-gradient(ellipse at center,rgba(0,0,0,0.12),transparent 70%)}
+</style>
+</head>
+<body data-theme="dark">
+<div class="app" id="app">
+<div class="tb"><span class="tb-t">📋 快捷信息板</span><div class="tb-b">
+<button class="btn" onclick="min()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2.5"><path d="M5 12h14" stroke-linecap="round"/></svg></button>
+<button class="btn x" onclick="closeApp()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+</div></div>
+<div class="sb">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16 16L20 20" stroke-linecap="round"/></svg>
+<input id="q" placeholder="搜索片段..."><span class="kbd">⌘⇧V</span>
+</div>
+<div class="cb" id="cb">
+<button class="pl on" data-c="all">全部</button><button class="pl" data-c="account">账号密码</button><button class="pl" data-c="text">文本</button><button class="pl" data-c="link">链接</button><button class="pl" data-c="code">代码</button>
+</div>
+<div class="lt" id="lt"></div>
+<div class="ft"><span class="fc" id="fc">0 个片段</span><div class="fa">
+<button class="ad" onclick="openModal()">+ 新建</button>
+<button class="ib" id="th" title="主题"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-linejoin="round"/></svg></button>
+<button class="ib" onclick="exp()" title="导出"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+</div>
+<div class="pet" id="pet"><canvas id="pc"></canvas><div class="psh"></div></div>
+<div class="ov" id="ov"><div class="md">
+<div class="mh"><h2 id="mt">新建片段</h2><button class="btn x" onclick="closeModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button></div>
+<div class="mb">
+<div class="fg"><label>名称</label><input class="fi" id="nm" placeholder="给片段起个名字"></div>
+<div class="fg"><label>分类</label><div class="fr" id="cs">
+<button class="co on" data-c="account">账号密码</button><button class="co" data-c="text">文本</button><button class="co" data-c="link">链接</button><button class="co" data-c="code">代码</button>
+</div></div>
+<div class="fg"><label>内容</label><textarea class="fi" id="ct" placeholder="输入内容..."></textarea></div>
+<div class="sh" id="sh"><svg width="13" height="13" viewBox="0 0 24 24" fill="#9333EA"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#9333EA" stroke-width="2" fill="none"/></svg><span>敏感信息仅存本地</span></div>
+</div>
+<div class="mf"><button class="bc" onclick="closeModal()">取消</button><button class="bs" onclick="save()">保存</button></div>
+</div></div>
+<!-- 删除确认（页内弹窗，不依赖被 WKWebView 吞掉的 window.confirm） -->
+<div class="ov" id="cf"><div class="md" style="width:300px">
+<div class="mh"><h2>确认删除</h2></div>
+<div class="mb"><p id="cfm" style="font-size:13px;line-height:1.6"></p></div>
+<div class="mf"><button class="bc" id="cfn">取消</button><button class="bs" id="cfy" style="background:#FF4D6D">删除</button></div>
+</div></div>
+<div class="tt" id="tt">已复制</div>
+<script src="three.min.js"></script>
+<script>
+// ===== 原生桥接：Mac 走 webkit.messageHandlers，Windows 走 electronAPI =====
+function NATIVE(name, data){
+  if (window.electronAPI && typeof window.electronAPI[name] === 'function') return window.electronAPI[name](data);
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers[name]) {
+    window.webkit.messageHandlers[name].postMessage(data == null ? null : data);
+  }
+}
+// ===== 数据层 =====
+var C={account:{i:'🔒',c:'#9333EA'},text:{i:'📝',c:'#22C55E'},link:{i:'🔗',c:'#FF4D6D'},code:{i:'💻',c:'#FFB454'}};
+var DEFAULTS=[{id:1,n:'微信账号',c:'lemon_tea_2024',cat:'account'},{id:2,n:'公司邮箱',c:'zhangsan@company.com',cat:'account'},{id:3,n:'常用签名',c:'祝好，张三 | 产品经理',cat:'text'},{id:4,n:'设计规范文档',c:'https://figma.com/file/abc',cat:'link'},{id:5,n:'API模板',c:'curl -X POST https://api.example.com',cat:'code'}];
+var D=[],eid=null,sc='account',flt='all';
+// 数据持久化改用原生桥接（见 main.swift 的 load/save），规避 WKWebView 在 app:// 下 localStorage 不可用/不持久化的坑
+function ld(){ NATIVE('load','th'); NATIVE('load','sn'); }
+function sv(){ try{ NATIVE('save',{k:'sn',v:JSON.stringify(D)}) }catch(e){} }
+// 原生侧读取完成后回调（见 main.swift 的 load 处理）
+window.__qbLoad=function(key, raw){
+  if(key==='sn'){
+    try{ D = raw ? JSON.parse(raw) : null }catch(e){ D=null; }
+    if(!D || !D.length){ D = DEFAULTS.map(function(x){return Object.assign({},x)}); sv(); }
+    render();
+  } else if(key==='th'){
+    if(raw==='light'){ document.body.dataset.theme='light'; setThIcon('light'); }
+    else { document.body.dataset.theme='dark'; setThIcon('dark'); }
+  }
+};
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function render(){
+  var l=document.getElementById('lt'),q=(document.getElementById('q').value||'').toLowerCase(),f=D;
+  if(flt!='all')f=f.filter(function(s){return s.cat==flt});
+  if(q)f=f.filter(function(s){return s.n.toLowerCase().indexOf(q)>=0||s.c.toLowerCase().indexOf(q)>=0});
+  document.getElementById('fc').textContent=D.length+' 个片段';
+  l.innerHTML=f.length?f.map(function(s){
+    var g=C[s.cat]||C.text,pv=s.c.substring(0,45)+(s.c.length>45?'...':'');
+    return '<div class="it"><div class="ic" style="background:'+g.c+'22">'+g.i+'</div><div class="cc"><div class="ct">'+esc(s.n)+'</div><div class="cv">'+esc(pv)+'</div></div><div class="ia"><button class="ab" onclick="edit('+s.id+')" title="编辑"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linejoin="round"/></svg></button><button class="ab" onclick="del('+s.id+')" title="删除"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><button class="cp2" onclick="cpy('+s.id+',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8" stroke-linecap="round"/></svg></button></div>'
+  }).join(''):'<div class="em"><p style="font-size:13px">没有片段</p></div>'
+}
+function cpy(id,b){
+  var s=D.find(function(x){return x.id==id}); if(!s)return;
+  function done(){b.classList.add('ok');toast('已复制：'+s.n);setTimeout(function(){b.classList.remove('ok')},1500);}
+  if(window.electronAPI){ Promise.resolve(window.electronAPI.copy(s.c)).then(done); }
+  else { NATIVE('copy', s.c); done(); }   // Mac：走原生剪贴板桥接，规避 WKWebView 的 navigator.clipboard 限制
+}
+function toast(m){var t=document.getElementById('tt');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+// ===== 窗口控制 =====
+function min(){NATIVE('min');document.getElementById('app').classList.add('hide');document.getElementById('pet').classList.add('show');if(window.__pet3d)window.__pet3d.ensure()}
+function showApp(){document.getElementById('pet').classList.remove('show');document.getElementById('app').classList.remove('hide')}
+function max(){NATIVE('max');showApp();if(window.__pet3d)window.__pet3d.pause()}
+function closeApp(){NATIVE('close')}
+// ===== 新建 / 编辑 =====
+function openModal(id){eid=id||null;document.getElementById('mt').textContent=id?'编辑片段':'新建片段';if(id){var s=D.find(function(x){return x.id==id});if(!s)return;document.getElementById('nm').value=s.n;document.getElementById('ct').value=s.c;sc=s.cat}else{document.getElementById('nm').value='';document.getElementById('ct').value='';sc='account'}updCS();document.getElementById('sh').style.display=sc=='account'?'flex':'none';document.getElementById('ov').classList.add('show');setTimeout(function(){document.getElementById('nm').focus()},100)}
+function closeModal(){document.getElementById('ov').classList.remove('show');eid=null}
+function save(){var n=document.getElementById('nm').value.trim(),c=document.getElementById('ct').value;if(!n){toast('请输入名称');return}if(!c){toast('请输入内容');return}var wasEdit=!!eid;if(eid){var s=D.find(function(x){return x.id==eid});if(s){s.n=n;s.c=c;s.cat=sc}}else{D.push({id:Date.now(),n:n,c:c,cat:sc})}sv();render();closeModal();toast(wasEdit?'已更新':'已添加')}
+function edit(id){openModal(id)}
+// ===== 删除：页内确认（不使用 window.confirm） =====
+var cfYes=null;
+function showConfirm(msg,yes){document.getElementById('cfm').textContent=msg;cfYes=yes;document.getElementById('cf').classList.add('show');}
+function del(id){var s=D.find(function(x){return x.id==id});if(!s)return;showConfirm('确定删除「'+s.n+'」？此操作不可撤销。',function(){D=D.filter(function(x){return x.id!=id});sv();render();toast('已删除')})}
+document.getElementById('cfn').onclick=function(){document.getElementById('cf').classList.remove('show');cfYes=null;};
+document.getElementById('cfy').onclick=function(){var f=cfYes;cfYes=null;document.getElementById('cf').classList.remove('show');if(f)f();};
+document.getElementById('cf').addEventListener('click',function(e){if(e.target===e.currentTarget){document.getElementById('cf').classList.remove('show');cfYes=null;}});
+// ===== 分类选择 =====
+function updCS(){document.querySelectorAll('.co').forEach(function(b){b.classList.toggle('on',b.dataset.c==sc)})}
+// ===== 导出：Mac 走原生写入下载夹，Windows 走 blob 下载 =====
+function exp(){
+  var json=JSON.stringify(D,null,2);
+  if(window.electronAPI){var b=new Blob([json],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='snippets.json';a.click();URL.revokeObjectURL(u);toast('已导出')}
+  else{NATIVE('export',json);toast('已导出到下载文件夹')}
+}
+// ===== 主题 =====
+function setThIcon(mode){
+  document.getElementById('th').innerHTML = mode=='light'
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-linejoin="round"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5" stroke-linecap="round"/></svg>';
+}
+function toggleTh(){var toLight=document.body.dataset.theme=='dark';document.body.dataset.theme=toLight?'light':'dark';setThIcon(document.body.dataset.theme);NATIVE('save',{k:'th',v:document.body.dataset.theme})}
+// ===== 事件绑定 =====
+document.getElementById('q').addEventListener('input',render);
+document.getElementById('cb').addEventListener('click',function(e){if(e.target.classList.contains('pl')){document.querySelectorAll('.pl').forEach(function(p){p.classList.remove('on')});e.target.classList.add('on');flt=e.target.dataset.c;render()}});
+document.getElementById('cs').addEventListener('click',function(e){if(e.target.classList.contains('co')){sc=e.target.dataset.c;updCS();document.getElementById('sh').style.display=sc=='account'?'flex':'none'}});
+document.getElementById('th').addEventListener('click',toggleTh);
+document.getElementById('ov').addEventListener('click',function(e){if(e.target===e.currentTarget)closeModal()});
+document.addEventListener('keydown',function(e){
+  if((e.metaKey||e.ctrlKey)&&e.shiftKey&&e.key=='V'){e.preventDefault();document.getElementById('q').focus();document.getElementById('q').select()}
+  if(e.key=='Escape'){closeModal();document.getElementById('cf').classList.remove('show');cfYes=null;}
+  if(e.key=='Enter'&&document.getElementById('ov').classList.contains('show')&&document.activeElement.tagName!='TEXTAREA')save()
+});
+// ===== 初始化 =====
+ld();   // 异步向原生请求数据，__qbLoad 回调里再 render()，避免首屏空列表闪烁
+
+// ===== 统一交互：宠物拖动/点击展开/悬停，标题栏拖动（两端通用） =====
+(function(){
+  var drag={mode:null,sx:0,sy:0,moved:false,acc:0};
+  var pc=document.getElementById('pc');
+  var tb=document.querySelector('.tb');
+  function computeLook(e){ if(!pc)return; } // 雪人无眼随，仅占位
+  // 原生接管窗口移动（鼠标监听器），JS 不再逐帧发消息，彻底消除抖动
+  function start(mode,e){drag.mode=mode;drag.sx=e.clientX;drag.sy=e.clientY;drag.moved=false;drag.acc=0;NATIVE('dragStart')}
+  function onMove(e){
+    if(!drag.mode)return;
+    // movementX/Y 是真实指针位移，与“窗口被原生移动导致 clientX 不变”无关，可正确判定点击/拖拽
+    var mx=e.movementX||0, my=e.movementY||0;
+    drag.acc+=Math.hypot(mx,my);
+    if(drag.mode==='pet'&&drag.acc>5)drag.moved=true;
+  }
+  function onUp(){
+    if(!drag.mode)return;
+    var pet=(drag.mode==='pet'), moved=drag.moved;
+    drag.mode=null;
+    NATIVE('dragEnd');
+    if(pet&&!moved){ if(window.petTap)window.petTap(); max(); }
+  }
+  if(pc){
+    pc.addEventListener('mousedown',function(e){e.preventDefault();start('pet',e)});
+    pc.addEventListener('mouseenter',function(){if(window.petHover)window.petHover()});
+    pc.addEventListener('mousemove',computeLook);
+    pc.addEventListener('mouseleave',function(){if(window.petLeave)window.petLeave()});
+  }
+  if(tb){ tb.addEventListener('mousedown',function(e){ if(e.target.closest('.btn'))return; start('full',e); }); }
+  window.addEventListener('mousemove',onMove);
+  window.addEventListener('mouseup',onUp);
+})();
+
+// ===== 3D 桌面宠物：雪人（三段雪球 + 煤眼 + 圆润橙鼻 + 微笑 + 纽扣 + 红围巾 + 礼帽 + 树枝臂；全程高段数平滑体，无任何三角/方块棱角） =====
+(function(){
+  var canvas,renderer,scene,camera,clock,holder,cat,animParts=null;
+  var started=false,ok=false,paused=true,rafId=0;
+  var hop=0,squash=0;
+  function setup(){
+    canvas=document.getElementById('pc'); if(!canvas||!window.THREE)return false;
+    renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    if(THREE.sRGBEncoding!==undefined)renderer.outputEncoding=THREE.sRGBEncoding;
+    if(THREE.ACESFilmicToneMapping!==undefined){renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;}
+    scene=new THREE.Scene();
+    camera=new THREE.PerspectiveCamera(35,1,0.1,100); camera.position.set(0,0,5.8); camera.lookAt(0,0,0);
+    scene.add(new THREE.HemisphereLight(0xffffff,0xbcd0e6,1.15));
+    var d=new THREE.DirectionalLight(0xffffff,1.4); d.position.set(2,4,4); scene.add(d);
+    var d2=new THREE.DirectionalLight(0x9fc0ff,0.45); d2.position.set(-3,1,-2); scene.add(d2);
+    var d3=new THREE.DirectionalLight(0xffffff,0.35); d3.position.set(0,-3,3); scene.add(d3);
+    holder=new THREE.Group(); scene.add(holder);
+    clock=new THREE.Clock();
+    if(window.ResizeObserver){ new ResizeObserver(size).observe(canvas); }
+    return true;
+  }
+  // 雪人：圆润、无棱角
+  function buildSnowman(){
+    cat=new THREE.Group();
+    var snow =new THREE.MeshStandardMaterial({color:0xFCFDFF,roughness:0.85});
+    var coal =new THREE.MeshBasicMaterial({color:0x23252B});
+    var nose =new THREE.MeshStandardMaterial({color:0xF08A24,roughness:0.6});
+    var scarf=new THREE.MeshStandardMaterial({color:0xE23B4E,roughness:0.8});
+    var stick=new THREE.MeshStandardMaterial({color:0x9B6B3A,roughness:0.9});
+    var hat  =new THREE.MeshStandardMaterial({color:0x2A2A2E,roughness:0.7});
+    // 三段雪球（底/中/头）
+    var b1=new THREE.Mesh(new THREE.SphereGeometry(0.58,40,40),snow); b1.position.y=-0.6; cat.add(b1);
+    var b2=new THREE.Mesh(new THREE.SphereGeometry(0.44,40,40),snow); b2.position.y=0.0;  cat.add(b2);
+    var b3=new THREE.Mesh(new THREE.SphereGeometry(0.34,40,40),snow); b3.position.y=0.62; cat.add(b3);
+    // 煤眼
+    [-1,1].forEach(function(s){ var e=new THREE.Mesh(new THREE.SphereGeometry(0.05,16,16),coal); e.position.set(s*0.13,0.70,0.30); cat.add(e); });
+    // 圆润橙鼻（球体拉伸，非三角锥）
+    var n=new THREE.Mesh(new THREE.SphereGeometry(0.05,18,18),nose); n.scale.set(0.8,0.8,1.7); n.position.set(0,0.62,0.33); cat.add(n);
+    // 微笑嘴（小煤球弧线）
+    [-0.16,-0.08,0,0.08,0.16].forEach(function(x){ var m=new THREE.Mesh(new THREE.SphereGeometry(0.028,12,12),coal); m.position.set(x,0.54-Math.abs(x)*0.4,0.31); cat.add(m); });
+    // 纽扣
+    [-0.05,0.06,0.17].forEach(function(y){ var bt=new THREE.Mesh(new THREE.SphereGeometry(0.05,14,14),coal); bt.position.set(0,y,0.42); cat.add(bt); });
+    // 围巾（圆环 + 垂下小球）
+    var ring=new THREE.Mesh(new THREE.TorusGeometry(0.34,0.07,16,40),scarf); ring.rotation.x=Math.PI/2; ring.position.set(0,0.34,0); cat.add(ring);
+    var end=new THREE.Mesh(new THREE.SphereGeometry(0.09,16,16),scarf); end.scale.set(1,1.4,1); end.position.set(0.22,0.18,0.28); cat.add(end);
+    // 树枝手臂（细圆柱，平滑无棱）
+    [-1,1].forEach(function(s){
+      var a=new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.045,0.5,14),stick); a.position.set(s*0.5,0.06,0); a.rotation.z=-s*0.9; cat.add(a);
+      var tw=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.025,0.18,10),stick); tw.position.set(s*0.72,0.22,0); tw.rotation.z=-s*0.4; cat.add(tw);
+    });
+    // 礼帽（圆柱冠 + 帽檐，高段数平滑）
+    var crown=new THREE.Mesh(new THREE.CylinderGeometry(0.25,0.27,0.3,36),hat); crown.position.set(0,0.92,0); cat.add(crown);
+    var brim=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,0.04,40),hat); brim.position.set(0,0.80,0); cat.add(brim);
+    cat.scale.setScalar(0.8);
+    holder.add(cat); ok=true; animParts=null; size();
+  }
+  function size(){ if(!renderer||!canvas)return; var w=canvas.clientWidth||0, h=canvas.clientHeight||0; if(w<=0||h<=0)return; renderer.setSize(w,h,false); if(camera){camera.aspect=w/h;camera.updateProjectionMatrix();} }
+  function loop(){
+    rafId=requestAnimationFrame(loop);
+    if(paused||!renderer)return;   // 宠物隐藏时彻底停渲染，零空耗
+    var dt=Math.min(clock.getDelta(),0.05), t=performance.now()/1000;
+    if(ok){
+      if(squash>0){ squash-=dt*3.5; if(squash<0)squash=0; }
+      var sq=squash;
+      var br=1+Math.sin(t*1.4)*0.02;
+      holder.scale.set(1+0.08*sq, br*(1-0.12*sq), 1);
+      holder.position.y=0.15+Math.sin(t*1.0)*0.04+hop;
+      holder.rotation.y=Math.sin(t*0.4)*0.08;
+      hop*=0.86;
+    }
+    renderer.render(scene,camera);
+  }
+  function startLoop(){ if(!rafId) loop(); }
+  function stopLoop(){ if(rafId){ cancelAnimationFrame(rafId); rafId=0; } }
+  function init(){
+    if(started)return; if(!setup())return; started=true;
+    buildSnowman();
+    paused=false; startLoop();
+  }
+  window.petLook=function(){};          // 雪人无眼随
+  window.petHover=function(){ if(squash<0.4)squash=0.5; };  // 悬停轻轻一缩（俏皮）
+  window.petLeave=function(){};
+  window.petTap=function(){ if(!ok)return; hop=0.28; squash=1; };
+  window.__pet3d={ensure:function(){init();paused=false;startLoop();setTimeout(size,40);},resume:function(){paused=false;startLoop();},pause:function(){paused=true;stopLoop();},resize:size,reload:function(){ if(cat)holder.remove(cat); buildSnowman(); }};
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "desktop-clipboard",
+  "version": "1.0.0",
+  "description": "桌面剪贴板 - 一个常驻桌面的轻量片段管理小组件（Windows 版）",
+  "productName": "桌面剪贴板",
+  "executableName": "桌面剪贴板",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack:win": "electron-packager . 桌面剪贴板 --platform win32 --arch x64 --out dist --icon icon.ico --overwrite"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "30.5.1",
+    "electron-packager": "^17.1.2"
+  }
+}

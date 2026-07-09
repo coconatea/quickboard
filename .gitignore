@@ -1,0 +1,16 @@
+# macOS 系统文件
+.DS_Store
+
+# 项目本地记忆 / 运行时数据（不公开）
+.workbuddy/
+
+# 构建产物：Mac 原生 app 包（二进制，非源码）
+native-mac/*.app
+
+# Node 依赖
+node_modules/
+
+# 打包好的发布 zip（作为 GitHub Release 附件分发，不进 git）
+桌面剪贴板-win.zip
+桌面剪贴板-win1.zip
+*.dmg
