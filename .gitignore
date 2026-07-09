@@ -4,8 +4,7 @@
 # 项目本地记忆 / 运行时数据（不公开）
 .workbuddy/
 
-# 构建产物：Mac 原生 app 包（二进制，非源码）
-native-mac/*.app
+# 注：native-mac/桌面剪贴板.app 现已纳入版本管理，方便直接下载运行（不再忽略 *.app）
 
 # Node 依赖
 node_modules/
