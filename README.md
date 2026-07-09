@@ -54,7 +54,7 @@
 ## 下载与运行
 
 ### Windows（推荐直接下载发布包）
-到本仓库 **Releases** 页下载 `桌面剪贴板-win.zip`，解压后双击 `QuickBoard.exe` 即可。
+到本仓库 **Releases** 页下载 `QuickBoard-win-v1.0.0.zip`（Windows 发布包），解压后双击 `QuickBoard.exe` 即可。
 - 未签名会触发 Windows SmartScreen：点「更多信息 → 仍要运行」即可。
 - 数据存放在 `C:\Users\<你>\AppData\Roaming\desktop-clipboard\QuickBoard\snippets.json`，可随时查看 / 备份。
 
